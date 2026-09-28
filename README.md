@@ -8,6 +8,7 @@ the `mlg87` plugin marketplace. Each plugin is independent: install only the one
 | Plugin | What it does |
 |---|---|
 | [`ask-pulse`](plugins/ask-pulse) | Frames the agent's last reply and the input box in an animated banner whenever the agent is waiting for you, so a finished turn is impossible to miss. |
+| [`jira-link`](plugins/jira-link) | Shows the Jira issue from your git branch below the composer: a clickable key, live status, and title via omp's Atlassian MCP login. |
 | [`obvi-plan`](plugins/obvi-plan) | Tints the terminal background while plan mode is active (midnight by default) and restores your own background when you leave it. |
 
 Each plugin's README covers what it does in detail, its commands and configuration, its known
@@ -25,6 +26,7 @@ Then install any plugin by name:
 
 ```
 /marketplace install ask-pulse@mlg87
+/marketplace install jira-link@mlg87
 /marketplace install obvi-plan@mlg87
 ```
 

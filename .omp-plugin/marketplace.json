@@ -47,6 +47,25 @@
       ],
       "homepage": "https://github.com/mlg87/omp-plugins",
       "repository": "https://github.com/mlg87/omp-plugins"
+    },
+    {
+      "name": "jira-link",
+      "description": "Shows the Jira issue from your git branch below the composer: a clickable key, live status, and title via omp's Atlassian MCP login.",
+      "source": "./jira-link",
+      "version": "1.0.0",
+      "author": {
+        "name": "Mason Goetz"
+      },
+      "category": "productivity",
+      "license": "MIT",
+      "keywords": [
+        "tui",
+        "jira",
+        "git",
+        "extension"
+      ],
+      "homepage": "https://github.com/mlg87/omp-plugins",
+      "repository": "https://github.com/mlg87/omp-plugins"
     }
   ]
 }
