@@ -26,7 +26,7 @@ ask-pulse has two modes, and both clear the moment you submit your next message.
 **Idle mode** runs whenever the agent yields the turn, including a plain answer that never called `ask`:
 
 - **Above the input box:** a caret rule, `^^^^ WAITING FOR YOUR INPUT ^^^^`.
-- **Above the agent's last reply:** a full-width line of `v` carets, added to the transcript. It
+- **Above the agent's last reply:** a full-width line of `ˇ` carets, added to the transcript. It
   stays dim while the agent is working and animates once the turn is yours.
 - **When the next reply starts:** the previous divider is removed if it is still on screen. If
   the reply was taller than the screen, the divider has already scrolled into terminal history
@@ -163,7 +163,7 @@ plus the rule above the input box is the closest effect the extension API allows
   `/ask-pulse hold 0` disables it.
 - **Too much motion.** `/ask-pulse period 4000` slows it down, and `/ask-pulse idle off` limits it
   to `ask` dialogs.
-- **A dim `v` line is left in scrollback.** Expected when a reply was taller than the screen: the
+- **A dim `ˇ` line is left in scrollback.** Expected when a reply was taller than the screen: the
   line had already scrolled into terminal history, where ask-pulse can't safely remove it.
 - **Settings don't seem to apply.** Run `/ask-pulse show` to see which sources are in effect. A
   project file or an `ASK_PULSE_*` environment variable overrides your user config.
@@ -222,6 +222,7 @@ generated `preview-*.html` files are gitignored; only the images are committed.
 
 | Version | Change |
 |---|---|
+| 1.9.0 | The rainbow on the `^` rule now flows into the title from both sides (the right half ran outward). The divider above the last reply uses `ˇ` instead of `v`, to mirror the `^` rule. |
 | 1.8.0 | Frame only the last reply: a `v` divider above it and the `^` rule above the input box, replacing 1.7's frame around the whole screen. |
 | 1.7.0 | Rainbow becomes the default appearance. |
 | 1.6.0 | Caret wave on the idle rule; colors mixed in OKLab; default cycle slowed to 2000 ms at ~30 fps. |
