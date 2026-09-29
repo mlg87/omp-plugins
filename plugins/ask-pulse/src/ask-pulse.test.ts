@@ -328,7 +328,7 @@ describe("AskPulseBanner.render", () => {
     expect(only).not.toContain(glyphs.topLeft)
     expect(only).not.toContain(glyphs.topRight)
     expect(only).not.toContain(glyphs.horizontal)
-    expect(only).toMatch(/^[\^v]+ WAITING FOR YOUR INPUT [\^v]+$/)
+    expect(only).toMatch(/^[\^ˇ]+ WAITING FOR YOUR INPUT [\^ˇ]+$/)
   })
 
   // Width 40 with a 24-column title gives 8 carets per side, so every `q` below is exact.
@@ -354,7 +354,7 @@ describe("AskPulseBanner.render", () => {
     test("sweeps every caret and flips it at the inward turnaround", () => {
       // Half a period: the front has cleared the innermost caret, so the whole line is swept.
       const { text, triplets } = idleAt(BASE + 600)
-      expect(text).toBe(`${"v".repeat(8)} WAITING FOR YOUR INPUT ${"v".repeat(8)}`)
+      expect(text).toBe(`${"ˇ".repeat(8)} WAITING FOR YOUR INPUT ${"ˇ".repeat(8)}`)
       expect(triplets.length).toBeGreaterThan(0)
       for (const triplet of triplets) expect(triplet).toEqual([...palette.colorA])
     })
@@ -412,6 +412,13 @@ describe("AskPulseBanner.render", () => {
     test("the outermost left caret at u=0 sits at hue 0.5/8", () => {
       const { triplets } = idleAt(BASE)
       expect(triplets[0]).toEqual([...hueToRgb(0.5 / 8)])
+    })
+
+    test("the right segment mirrors the left, so both halves flow toward the text", () => {
+      for (const now of [BASE, BASE + 300, BASE + 900]) {
+        const { triplets } = idleAt(now)
+        expect(triplets).toEqual([...triplets].reverse())
+      }
     })
 
     test("the hue flows over time", () => {
@@ -508,7 +515,7 @@ describe("AskPulseDivider", () => {
   test("inactive render is a dim full-width v line, cached by reference", () => {
     const divider = new AskPulseDivider(dim)
     const first = divider.render(40)
-    expect(plain(first[0] as string)).toBe("v".repeat(40))
+    expect(plain(first[0] as string)).toBe("ˇ".repeat(40))
     expect(first[0]).toContain(`${ESC}[2m`)
     expect(divider.render(40)).toBe(first) // same array reference: pi-tui treats this as "unchanged"
   })
@@ -523,7 +530,7 @@ describe("AskPulseDivider", () => {
       divider.activate(rainbowPalette)
       for (const now of [BASE, BASE + 300, BASE + 600]) {
         clock.mockReturnValue(now)
-        expect(plain(divider.render(40)[0] as string)).toBe("v".repeat(40))
+        expect(plain(divider.render(40)[0] as string)).toBe("ˇ".repeat(40))
       }
     })
 
@@ -554,7 +561,7 @@ describe("AskPulseDivider", () => {
     divider.activate(pairPalette)
     clock.mockReturnValue(BASE + 600)
     const line = divider.render(40)[0] as string
-    expect(plain(line)).toBe("v".repeat(40))
+    expect(plain(line)).toBe("ˇ".repeat(40))
     const triplets = [...line.matchAll(TRUECOLOR)].map((m) => m.slice(1).map(Number))
     expect(triplets.length).toBeGreaterThan(0)
     for (const triplet of triplets) expect(triplet).toEqual([...pairPalette.colorA])
@@ -566,7 +573,7 @@ describe("AskPulseDivider", () => {
     divider.render(40)
     divider.deactivate()
     const line = divider.render(40)[0] as string
-    expect(plain(line)).toBe("v".repeat(40))
+    expect(plain(line)).toBe("ˇ".repeat(40))
     expect(line).toContain(`${ESC}[2m`)
   })
 })

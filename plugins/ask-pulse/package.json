@@ -1,6 +1,6 @@
 {
   "name": "omp-ask-pulse",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "Pulsing dayglo banner for a waiting omp agent: a rule on every yielded turn, a boxed banner during ask.",
   "license": "MIT",
   "omp": {

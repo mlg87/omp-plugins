@@ -335,6 +335,12 @@ interface WaveCell {
  * is smoothstepped — a linear band leaves a visible crease at the front on a dark terminal. The
  * glyph flips at the band's midpoint, which is where the color visibly changes over.
  */
+/**
+ * v1.9: the down-pointing caret. `ˇ` (U+02C7 caron) is the mirror image of `^` — same size, same
+ * height in the cell — where `v` read as a heavier, lower glyph next to the `^` rule.
+ */
+const DOWN_CARET = "ˇ"
+
 function waveCell(i: number, n: number, f: number, normal: string, flipped: string, palette: Palette): WaveCell {
   const q = (i + 0.5) / n
   const raw = Math.min(1, Math.max(0, (f - q + WAVE_SOFTNESS) / (2 * WAVE_SOFTNESS)))
@@ -530,7 +536,7 @@ export class AskPulseBanner implements Component {
     // the uniform horizontal rule with caret runs that a color wave sweeps inward from both edges
     // to the text and back out again; v1.7's rainbow mode instead flows a hue continuously along
     // the rule into the text, with no bounce and no flip. v1.8: carets point up (`^`) at rest and
-    // flip to point down (`v`) as the wave passes — matching the `v` divider above the last reply.
+    // flip to point down (`ˇ` since v1.9) as the wave passes — matching the divider above the last reply.
     if (this.#questions.length === 0) {
       const titleWidth = Math.min(stringWidth(TITLE), width)
       const left = Math.max(0, Math.floor((width - titleWidth) / 2))
@@ -542,7 +548,7 @@ export class AskPulseBanner implements Component {
       for (let i = 0; i < left; i++) {
         if (palette.rainbow) cells.push(rainbowCell(i, left, u, "^"))
         else if (locked) cells.push({ glyph: "^", color: palette.colorA })
-        else cells.push(waveCell(i, left, f, "^", "v", palette))
+        else cells.push(waveCell(i, left, f, "^", DOWN_CARET, palette))
       }
       for (const glyph of TITLE.slice(0, titleWidth)) {
         cells.push(
@@ -552,10 +558,11 @@ export class AskPulseBanner implements Component {
         )
       }
       // The right segment mirrors: its outer edge is the *last* column, so `k` counts back from it.
+      // v1.9: rainbow mode mirrors too, so the hue flows right-to-left into the text.
       for (let k = 0; k < right; k++) {
-        if (palette.rainbow) cells.push(rainbowCell(k, right, u, "^"))
+        if (palette.rainbow) cells.push(rainbowCell(right - 1 - k, right, u, "^"))
         else if (locked) cells.push({ glyph: "^", color: palette.colorA })
-        else cells.push(waveCell(right - 1 - k, right, f, "^", "v", palette))
+        else cells.push(waveCell(right - 1 - k, right, f, "^", DOWN_CARET, palette))
       }
       return [paintCells(cells)]
     }
@@ -606,7 +613,7 @@ const REST_PALETTE: Palette = {
 
 /**
  * Cells of the full-width down-caret line above the last reply: hue flows from both edges toward
- * the middle, mirroring the rule. The glyph never changes (`v` in both wave states) because a
+ * the middle, mirroring the rule. The glyph never changes (`ˇ` in both wave states) because a
  * transcript row that may already be in scrollback must only ever change color, never glyphs.
  */
 function dividerCells(width: number, u: number, f: number, locked: boolean, palette: Palette): WaveCell[] {
@@ -617,15 +624,15 @@ function dividerCells(width: number, u: number, f: number, locked: boolean, pale
     const inLeft = c < left
     const i = inLeft ? c : width - 1 - c
     const n = inLeft ? left : right
-    if (palette.rainbow) cells.push(rainbowCell(i, n, u, "v"))
-    else if (locked) cells.push({ glyph: "v", color: palette.colorA })
-    else cells.push(waveCell(i, n, f, "v", "v", palette))
+    if (palette.rainbow) cells.push(rainbowCell(i, n, u, DOWN_CARET))
+    else if (locked) cells.push({ glyph: DOWN_CARET, color: palette.colorA })
+    else cells.push(waveCell(i, n, f, DOWN_CARET, DOWN_CARET, palette))
   }
   return cells
 }
 
 /**
- * Full-width `v` divider appended to the transcript at each assistant `message_start`, framing
+ * Full-width `ˇ` divider appended to the transcript at each assistant `message_start`, framing
  * only the last reply. Dim while the agent works; animates once the turn yields (`activate()`)
  * and returns to a dim resting line when superseded or cleared (`deactivate()`). Declares itself
  * a finalized transcript block whose version bumps on every repaint so omp knows not to replay
@@ -680,7 +687,7 @@ export class AskPulseDivider implements Component {
     if (width < 1) return []
     if (!this.#active) {
       if (this.#cacheWidth !== width || this.#cacheActive) {
-        this.#cache = [this.#dim("v".repeat(width))]
+        this.#cache = [this.#dim(DOWN_CARET.repeat(width))]
         this.#cacheWidth = width
         this.#cacheActive = false
       }
